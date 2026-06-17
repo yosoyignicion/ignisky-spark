@@ -58,6 +58,9 @@ BOLD="${ESC}[1m"
 NC="${ESC}[0m"
 CHECK="${GREEN}✓${NC}"
 CROSS="${RED}✗${NC}"
+SAFE="${GREEN}🟢${NC}"
+RISK="${YELLOW}🟡${NC}"
+VULN="${RED}🔴${NC}"
 
 # ═══════════════════════════════════════════════════════════════
 #  UTILIDADES
@@ -2083,9 +2086,9 @@ parse_args() {
             --list)          list_types; exit 0 ;;
             --git)           DO_GIT=true ;;
             --install)       DO_INSTALL=true ;;
-            --tree)          MODE="tree" ;;
-            --doctor)        MODE="doctor" ;;
-            --upgrade)       MODE="upgrade" ;;
+            --tree)          MODE="tree"; PREMIUM_DIR="${2:-\$PWD}"; shift ;;
+            --doctor)          MODE="doctor"; PREMIUM_DIR="${2:-\$PWD}"; shift ;;
+            --upgrade)          MODE="upgrade"; PREMIUM_DIR="${2:-\$PWD}"; shift ;;
             --ci)            MODE="premium-ci" ;;
             --make)          MODE="premium-make" ;;
             --bootstrap)     MODE="premium-bootstrap" ;;
@@ -2102,30 +2105,31 @@ parse_args() {
         local ptype="${PROJECT_TYPE:-$(detect_project_type "$pdir")}"
         case "$MODE" in
             premium-ci)
+                [[ "${SPARK_PREMIUM:-}" != "true" ]] && { premium_stub "blast"; return; }
                 premium_ci "$pdir" "$ptype"
                 ;;
             premium-make)
+                [[ "${SPARK_PREMIUM:-}" != "true" ]] && { premium_stub "forge"; return; }
                 premium_make "$pdir" "$ptype"
                 ;;
             premium-bootstrap)
+                [[ "${SPARK_PREMIUM:-}" != "true" ]] && { premium_stub "env"; return; }
                 premium_bootstrap "$ptype"
                 ;;
             premium-templates)
+                [[ "${SPARK_PREMIUM:-}" != "true" ]] && { premium_stub "kit"; return; }
                 premium_templates "$pdir" "$ptype"
                 ;;
             premium-all)
                 premium_all
                 ;;
-        esac
-        exit 0
-    fi
-
-    # Si hay modo tree/doctor/upgrade (no requieren scaffold)
-    if [[ -n "${MODE:-}" ]]; then
-        case "$MODE" in
-            tree)    cmd_tree "${PREMIUM_DIR:-$PWD}" ;;
-            doctor)  cmd_doctor "${PREMIUM_DIR:-$PWD}" ;;
-            upgrade) cmd_upgrade "${PREMIUM_DIR:-$PWD}" ;;
+            tree|doctor|upgrade)
+                # These are handled after parse_args
+                return
+                ;;
+            *)
+                die "Modo no implementado: $MODE"
+                ;;
         esac
         exit 0
     fi
@@ -2148,6 +2152,15 @@ parse_args() {
 
 main() {
     parse_args "$@"
+
+    # Modos que no requieren scaffold (tree, doctor, upgrade)
+    if [[ -n "${MODE:-}" ]]; then
+        case "$MODE" in
+            tree)    cmd_tree "${PREMIUM_DIR:-$PWD}"; exit 0 ;;
+            doctor)  cmd_doctor "${PREMIUM_DIR:-$PWD}"; exit 0 ;;
+            upgrade) cmd_upgrade "${PREMIUM_DIR:-$PWD}"; exit 0 ;;
+        esac
+    fi
 
     if [[ "$INTERACTIVE" == false ]]; then
         # Modo directo (flags)
