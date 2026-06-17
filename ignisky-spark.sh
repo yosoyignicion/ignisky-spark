@@ -89,7 +89,7 @@ premium_footer() {
     echo ""
     separator
     echo -e "  ${BOLD}💎 Disponible en el pack premium${NC}"
-    echo -e "  ${BOLD}👉 https://ignaciodev.gumroad.com/l/ykcwl  ·  Cupón: ${RED}IGNICION25${NC}"
+    echo -e "  ${BOLD}👉 https://ignaciodev.gumroad.com/l/ignisky-spark-premium  ·  Cupón: ${RED}IGNICION25${NC}"
     separator
 }
 
@@ -371,7 +371,7 @@ Este workspace está optimizado para ser usado por agentes AI (Hermes Agent, Cla
 | ⛁ Bootstrap de herramientas | Premium |
 | ⛁ Editorconfig + Prettier + TSConfig | Premium |
 
-> ⛁ Premium — Disponible con cupón **IGNICION25** en https://ignaciodev.gumroad.com/l/ykcwl
+> ⛁ Premium — Disponible con cupón **IGNICION25** en https://ignaciodev.gumroad.com/l/ignisky-spark-premium
 
 ## 📦 Requisitos
 
@@ -1401,10 +1401,10 @@ install:        ## Instala dependencias
 	npm ci
 
 docker-build:   ## Construye imagen Docker
-	docker build -t $(NAME) .
+	docker build -t \$(NAME) .
 
 docker-run:     ## Ejecuta contenedor Docker
-	docker run --rm $(NAME)
+	docker run --rm \$(NAME)
 MKEOF
             ;;
         web)
@@ -1453,10 +1453,10 @@ install:        ## Instala dependencias
 	npm ci
 
 docker-build:   ## Construye imagen Docker
-	docker build -t \$(NAME) .
+	docker build -t \\$(NAME) .
 
 docker-run:     ## Ejecuta contenedor Docker
-	docker run --rm -p 80:80 \$(NAME)
+	docker run --rm -p 80:80 \\$(NAME)
 MKEOF
             ;;
         rust)
@@ -1487,10 +1487,10 @@ install:        ## Instala dependencias
 	cargo fetch
 
 docker-build:   ## Construye imagen Docker
-	docker build -t $(NAME) .
+	docker build -t \$(NAME) .
 
 docker-run:     ## Ejecuta contenedor Docker
-	docker run --rm $(NAME)
+	docker run --rm \$(NAME)
 MKEOF
             ;;
         cpp)
@@ -1505,33 +1505,33 @@ BUILD := build
 help:           ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*##' Makefile | sort | awk 'BEGIN {FS = ":.*## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
 
-build: $(BUILD)/main  ## Compila el proyecto
+build: \$(BUILD)/main  ## Compila el proyecto
 
-$(BUILD)/main: $(SRC)/*.cpp
-	@mkdir -p $(BUILD)
+\$(BUILD)/main: \$(SRC)/*.cpp
+	@mkdir -p \$(BUILD)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-test: $(BUILD)/test  ## Ejecuta tests
-	./$(BUILD)/test
+test: \$(BUILD)/test  ## Ejecuta tests
+	./\$(BUILD)/test
 
-$(BUILD)/test: tests/*.cpp
-	@mkdir -p $(BUILD)
+\$(BUILD)/test: tests/*.cpp
+	@mkdir -p \$(BUILD)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 lint:           ## Linting con cppcheck
-	cppcheck --enable=all --suppress=missingIncludeSystem $(SRC)/
+	cppcheck --enable=all --suppress=missingIncludeSystem \$(SRC)/
 
 clean:          ## Limpia artefactos
-	rm -rf $(BUILD)
+	rm -rf \$(BUILD)
 
 run: build      ## Ejecuta el proyecto
-	./$(BUILD)/main
+	./\$(BUILD)/main
 
 docker-build:   ## Construye imagen Docker
-	docker build -t $(NAME:-app) .
+	docker build -t \$(NAME:-app) .
 
 docker-run:     ## Ejecuta contenedor Docker
-	docker run --rm $(NAME:-app)
+	docker run --rm \$(NAME:-app)
 MKEOF
             ;;
         bash)
@@ -1757,7 +1757,7 @@ premium_all() {
     echo -e "  ${GRAY}│${NC}  🧰  ${BOLD}spark:kit${NC}      ${GRAY}· Editorconfig + Prettier + Linters por tipo${NC}"
     echo ""
     separator
-    echo -e "  ${BOLD}👉 https://ignaciodev.gumroad.com/l/ykcwl${NC}"
+    echo -e "  ${BOLD}👉 https://ignaciodev.gumroad.com/l/ignisky-spark-premium${NC}"
     echo -e "  ${BOLD}🏷️  Cupón: ${RED}IGNICION25${NC} ${GRAY}(25% OFF → 11.25€)${NC}"
     separator
 }
@@ -1951,7 +1951,7 @@ usage() {
     echo -e "  ${SCRIPT_NAME} --premium"
     echo ""
     separator
-    echo -e "${BOLD}💎 https://ignaciodev.gumroad.com/l/ykcwl  ·  Cupón: ${RED}IGNICION25${NC}"
+    echo -e "${BOLD}💎 https://ignaciodev.gumroad.com/l/ignisky-spark-premium  ·  Cupón: ${RED}IGNICION25${NC}"
     separator
     exit 0
 }

@@ -5,7 +5,7 @@
   <a href="https://hermes-agent.nousresearch.com"><img src="https://img.shields.io/badge/Hermes-0.16%2B-050505?style=flat-square" alt="Hermes"></a>
   <a href="https://github.com/yosoyignicion"><img src="https://img.shields.io/badge/Ignición-Tools-ED2100?style=flat-square" alt="Ignición"></a>
   <a href=".github/workflows/lint.yml"><img src="https://img.shields.io/badge/ShellCheck-Passing-ED2100?style=flat-square" alt="ShellCheck"></a>
-  <a href="https://ignaciodev.gumroad.com/l/ykcwl"><img src="https://img.shields.io/badge/Premium-15€-050505?style=flat-square&logo=gumroad&logoColor=white" alt="Premium"></a>
+  <a href="https://ignaciodev.gumroad.com/l/ignisky-spark-premium"><img src="https://img.shields.io/badge/Premium-15€-050505?style=flat-square&logo=gumroad&logoColor=white" alt="Premium"></a>
 </p>
 
 > **ignisky-spark** es un scaffold inteligente para inicializar workspaces de agentes AI. Crea al instante la estructura de proyecto perfecta para que Claude Code, Codex CLI, Hermes Agent o cualquier otro agente empiece a trabajar sin fricción.
@@ -114,7 +114,7 @@ Las funciones premium se aplican **tanto en proyectos nuevos como existentes** �
 > 🏷️ **Cupón exclusivo:** `IGNICION25` — 25% OFF en el pack premium
 
 <p align="center">
-  <a href="https://ignaciodev.gumroad.com/l/ykcwl">
+  <a href="https://ignaciodev.gumroad.com/l/ignisky-spark-premium">
     <img src="https://img.shields.io/badge/🎯-CONSEGUIR+PREMIUM-ED2100?style=for-the-badge" alt="Premium">
   </a>
   <br>
