@@ -41,6 +41,8 @@
 | `ts` | TypeScript/Node.js para herramientas MCP | 🟦 | `.ts` |
 | `cpp` | C++ nativo para alto rendimiento | ⚡ | `.cpp` |
 | `rust` | Rust con Cargo para agentes seguros | 🦀 | `.rs` |
+| `web` | Web estática HTML/CSS/JS | 🌐 | `.html` |
+| `web-app` | Web app completa con SDD | 📦 | `.js` |
 
 Cada tipo crea automáticamente:
 

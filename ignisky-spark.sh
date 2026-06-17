@@ -32,6 +32,8 @@ declare -a PROJECT_TYPES=(
     "ts|TypeScript/Node.js para herramientas MCP|🟦|.ts"
     "cpp|C++ nativo para alto rendimiento|⚡|.cpp"
     "rust|Rust con Cargo para agentes seguros|🦀|.rs"
+    "web|Web estática HTML/CSS/JS|🌐|.html"
+    "web-app|Web app completa con SDD|📦|.js"
 )
 
 get_type_field()  { echo "$1" | cut -d'|' -f"$2"; }
@@ -271,12 +273,30 @@ rusty-tags/
 *.pdb
 RSEOF
             ;;
+
+        web)
+            # Web estática — sin patrones extra
+            ;;
+
+        web-app)
+            cat << 'WAEOF'
+
+# ──────────────────────────────────────────
+#  Web App (Node.js)
+# ──────────────────────────────────────────
+node_modules/
+dist/
+build/
+.env
+.env.local
+WAEOF
+            ;;
+
     esac
 }
 
 # ═══════════════════════════════════════════════════════════════
 #  GENERADOR — README template
-# ═══════════════════════════════════════════════════════════════
 
 generate_readme() {
     local project_name="$1"
@@ -434,6 +454,8 @@ generate_agents_md() {
     case "$project_type" in
         python) build_cmd="pip install -e .";    test_cmd="pytest" ;;
         ts)     build_cmd="npm run build";       test_cmd="npm test" ;;
+        web)    build_cmd="echo static";            test_cmd="echo check" ;;
+        web-app) build_cmd="npm run build";          test_cmd="npm test" ;;
         rust)   build_cmd="cargo build";         test_cmd="cargo test" ;;
         cpp)    build_cmd="make";                test_cmd="make test" ;;
         bash)   build_cmd="shellcheck src/*.sh"; test_cmd="bash tests/test_*.sh" ;;
@@ -750,6 +772,119 @@ create_scaffold() {
             success "Cargo.toml creado"
             ;;
 
+        web)
+            mkdir -p "${target_dir}/src/css" "${target_dir}/src/js"
+            cat > "${target_dir}/src/index.html" <<- HTEOF
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${name}</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <h1>🔥 ${name}</h1>
+  <script src="js/main.js"></script>
+</body>
+</html>
+HTEOF
+            cat > "${target_dir}/src/css/style.css" <<- CSSEOF
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, sans-serif; color: #111; background: #fafafa; }
+CSSEOF
+            cat > "${target_dir}/src/js/main.js" <<- JSEOF
+console.log("🔥 ${name} funcionando!");
+JSEOF
+            cat > "${target_dir}/docs/index.md" <<- 'DOCEOF'
+# Documentación del proyecto web
+
+Escribe aquí la documentación del sitio.
+DOCEOF
+            success "src/index.html + CSS + JS creados"
+            ;;
+
+        web-app)
+            mkdir -p "${target_dir}/src/css" "${target_dir}/src/js/components" "${target_dir}/public"
+            cat > "${target_dir}/src/index.html" <<- HTEOF
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${name}</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app"></div>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
+HTEOF
+            cat > "${target_dir}/src/css/style.css" <<- CSSEOF
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, sans-serif; color: #111; background: #fafafa; }
+#app { min-height: 100vh; display: flex; flex-direction: column; }
+CSSEOF
+            cat > "${target_dir}/src/js/app.js" <<- JSEOF
+console.log("🔥 ${name} app iniciada");
+JSEOF
+            mkdir -p "${target_dir}/src/js/components" "${target_dir}/public"
+            cat > "${target_dir}/package.json" <<- 'PKGEOF'
+{
+  "name": "__PROJECT_NAME__",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "npx serve src",
+    "build": "echo 'build script pendiente'",
+    "test": "echo 'test script pendiente'"
+  }
+}
+PKGEOF
+            sed -i "s/__PROJECT_NAME__/$name/g" "${target_dir}/package.json"
+            cat > "${target_dir}/.env.example" <<- ENVEOF
+# Variables de entorno
+# Copia a .env y completa los valores
+APP_NAME=${name}
+APP_ENV=development
+ENVEOF
+            cat > "${target_dir}/docs/sdd.md" <<- SDDEOF
+# Software Design Document — ${name}
+
+> Generado por ignisky-spark 🔥
+
+## Resumen
+
+Breve descripción del propósito y alcance del proyecto.
+
+## Arquitectura
+
+Descripción de la arquitectura, patrones usados y estructura de directorios.
+
+## Componentes
+
+Lista de componentes principales y sus responsabilidades.
+
+## API / Interfaces
+
+Endpoints, contratos y formatos de datos.
+
+## Decisiones técnicas
+
+ADR - Architecture Decision Records.
+
+---
+*SDD generado con [ignisky-spark](https://github.com/yosoyignicion/ignisky-spark)*
+SDDEOF
+            cat > "${target_dir}/docs/index.md" <<- 'DOCEOF'
+# Documentación del proyecto web
+
+- [SDD — Software Design Document](sdd.md)
+DOCEOF
+            success "src/index.html + CSS + JS + components/ + public/ + SDD creados"
+            ;;
+
         *)
             die "Tipo de proyecto no soportado: $type"
             ;;
@@ -847,6 +982,20 @@ install_deps() {
                 warn "No se encontró bun ni npm"
             fi
             ;;
+        web)
+            if command -v python3 &>/dev/null; then
+                python3 -m http.server --help &>/dev/null && success "Python3 disponible para servidor local" || warn "python3 no disponible"
+            else
+                warn "python3 no instalado"
+            fi
+            ;;
+        web-app)
+            if command -v npm &>/dev/null; then
+                npm install && success "Deps instaladas con npm" || warn "npm install falló"
+            else
+                warn "npm no instalado"
+            fi
+            ;;
         rust)
             if command -v cargo &>/dev/null; then
                 cargo check && success "Deps verificadas con cargo" || warn "cargo check falló"
@@ -911,6 +1060,8 @@ detect_project_type() {
     local sh_count
     sh_count=$(find "$dir" -maxdepth 2 -name '*.sh' 2>/dev/null | wc -l)
     [[ "$sh_count" -gt 0 ]]             && { echo "bash"; return; }
+    [[ -f "${dir}/package.json" ]]       && { echo "web-app"; return; }
+    ls "${dir}/src/index.html" &>/dev/null 2>&1 && { echo "web"; return; }
     echo "unknown"
 }
 
@@ -965,6 +1116,41 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+CIEOF
+            ;;
+        web)
+            cat > "${target_dir}/.github/workflows/ci.yml" <<- CIEOF
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y htmlhint || true
+      - run: echo "✅ Web estático — sin build necesario"
+CIEOF
+            ;;
+        web-app)
+            cat > "${target_dir}/.github/workflows/ci.yml" <<- CIEOF
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
 CIEOF
             ;;
         rust)
@@ -1049,6 +1235,29 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY package*.json ./
 CMD ["node", "dist/main.js"]
+DOCKEOF
+            ;;
+        web)
+            cat > "${target_dir}/Dockerfile" <<- DOCKEOF
+FROM nginx:alpine
+COPY src/ /usr/share/nginx/html/
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+DOCKEOF
+            ;;
+        web-app)
+            cat > "${target_dir}/Dockerfile" <<- DOCKEOF
+FROM node:22-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY src/ ./src/
+RUN npm run build
+
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
 DOCKEOF
             ;;
         rust)
@@ -1184,6 +1393,58 @@ docker-run:     ## Ejecuta contenedor Docker
 	docker run --rm $(NAME)
 MKEOF
             ;;
+        web)
+            cat > "${target_dir}/Makefile" <<- MKEOF
+.PHONY: help test clean run
+
+help:           ## Muestra esta ayuda
+	@grep -E '^[a-zA-Z_-]+:.*##' Makefile | sort | awk 'BEGIN {FS = ":.*## "}; {printf "  \033[36m%-16s\033[0m %s\n", \$$1, \$$2}'
+
+test:           ## No hay tests en web estática
+	@echo "✅ Web estática — sin tests automatizados"
+
+clean:          ## Limpia temporales
+	rm -rf tmp/
+
+run:            ## Sirve localmente con python3
+	@echo "  → Abre http://localhost:8000"
+	python3 -m http.server 8000 -d src
+MKEOF
+            ;;
+        web-app)
+            cat > "${target_dir}/Makefile" <<- MKEOF
+.PHONY: help build test clean lint run install docker-build docker-run
+
+NAME ?= app
+
+help:           ## Muestra esta ayuda
+	@grep -E '^[a-zA-Z_-]+:.*##' Makefile | sort | awk 'BEGIN {FS = ":.*## "}; {printf "  \033[36m%-16s\033[0m %s\n", \$$1, \$$2}'
+
+build:          ## Build de la web app
+	npm run build
+
+test:           ## Ejecuta tests
+	npm test
+
+lint:           ## Linting
+	npx eslint src/
+
+clean:          ## Limpia artefactos
+	rm -rf dist/ node_modules/
+
+run:            ## Dev server
+	npm run dev
+
+install:        ## Instala dependencias
+	npm ci
+
+docker-build:   ## Construye imagen Docker
+	docker build -t \$(NAME) .
+
+docker-run:     ## Ejecuta contenedor Docker
+	docker run --rm -p 80:80 \$(NAME)
+MKEOF
+            ;;
         rust)
             cat > "${target_dir}/Makefile" <<- MKEOF
 .PHONY: help build test clean lint run install docker-build docker-run
@@ -1308,11 +1569,22 @@ premium_bootstrap() {
             done
             local install_cmd="npm install -g bun typescript tsx"
             ;;
+        web)
+            for tool in python3; do
+                command -v "$tool" &>/dev/null && found+=("$tool") || missing+=("$tool")
+            done
+            local install_cmd="python3 ya incluido — instala un editor de texto"
+            ;;
+        web-app)
+            for tool in node npm; do
+                command -v "$tool" &>/dev/null && found+=("$tool") || missing+=("$tool")
+            done
+            local install_cmd="nvm install --lts  # o desde https://nodejs.org"
+            ;;
         rust)
             for tool in rustup cargo clippy rustfmt; do
                 command -v "$tool" &>/dev/null && found+=("$tool") || missing+=("$tool")
             done
-            # clippy y rustfmt vienen con rustup
             local install_cmd="rustup update && rustup component add clippy rustfmt"
             ;;
         cpp)
@@ -1424,6 +1696,21 @@ ColumnLimit: 100
 AllowShortFunctionsOnASingleLine: None
 CFEOF
             success ".clang-format generado"
+            ;;
+        web)
+            success "Web usa .editorconfig + .prettierrc (incluido en general)"
+            ;;
+        web-app)
+            cat > "${target_dir}/.prettierrc" <<- PTEOF
+{
+  "semi": true,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "printWidth": 100,
+  "tabWidth": 2
+}
+PTEOF
+            success ".prettierrc generado"
             ;;
         rust)
             cat > "${target_dir}/rustfmt.toml" <<- RFEOF
@@ -1612,7 +1899,7 @@ usage() {
     echo -e "${BOLD}Opciones gratuitas:${NC}"
     echo -e "  ${GREEN}--help${NC}, ${GREEN}-h${NC}            Muestra esta ayuda"
     echo -e "  ${GREEN}--version${NC}                Muestra la versión"
-    echo -e "  ${GREEN}--type${NC} <lenguaje>         Inicializa workspace (bash|python|ts|cpp|rust)"
+    echo -e "  ${GREEN}--type${NC} <lenguaje>         Inicializa workspace (bash|python|ts|cpp|rust|web|web-app)"
     echo -e "  ${GREEN}--name${NC} <nombre>           Nombre del proyecto"
     echo -e "  ${GREEN}--author${NC} <autor>          Autor del proyecto (default: git user.name)"
     echo -e "  ${GREEN}--desc${NC} <descripción>      Descripción breve del proyecto"
