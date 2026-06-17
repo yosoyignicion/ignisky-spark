@@ -1,80 +1,136 @@
-# ignisky-spark 🔥 — La chispa inicial de tu workspace AI
+# 🔥 ignisky-spark — La chispa inicial de tu workspace AI
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.1-ED2100?style=flat-square" alt="version">
-  <img src="https://img.shields.io/badge/license-MIT-050505?style=flat-square" alt="license">
-  <img src="https://img.shields.io/badge/AI-Ready-ED2100?style=flat-square" alt="ai-ready">
-  <img src="https://img.shields.io/badge/ShellCheck-Passing-ED2100?style=flat-square" alt="shellcheck">
-  <img src="https://img.shields.io/badge/by-IgnicionDev-050505?style=flat-square" alt="author">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-ED2100?style=flat-square" alt="MIT"></a>
+  <a href="https://hermes-agent.nousresearch.com"><img src="https://img.shields.io/badge/Hermes-0.16%2B-050505?style=flat-square" alt="Hermes"></a>
+  <a href="https://github.com/yosoyignicion"><img src="https://img.shields.io/badge/Ignición-Tools-ED2100?style=flat-square" alt="Ignición"></a>
+  <a href=".github/workflows/lint.yml"><img src="https://img.shields.io/badge/ShellCheck-Passing-ED2100?style=flat-square" alt="ShellCheck"></a>
+  <a href="https://ignaciodev.gumroad.com/l/ignisky-spark-premium"><img src="https://img.shields.io/badge/Premium-15€-050505?style=flat-square&logo=gumroad&logoColor=white" alt="Premium"></a>
 </p>
 
-**ignisky-spark** es un scaffold inteligente para inicializar workspaces de agentes AI. Crea al instante la estructura de proyecto perfecta para que tu agente (Hermes Agent, Claude Code, Codex CLI...) empiece a trabajar sin fricción.
+> **ignisky-spark** es un scaffold inteligente para inicializar workspaces de agentes AI. Crea al instante la estructura de proyecto perfecta para que Claude Code, Codex CLI, Hermes Agent o cualquier otro agente empiece a trabajar sin fricción.
 
-> ⚡ Parte del ecosistema **ignisky-*** por **Ignición 🔥**
+---
+
+## 📦 Instalación
+
+```bash
+# 1. Clona el repositorio
+git clone https://github.com/yosoyignicion/ignisky-spark.git
+cd ignisky-spark
+
+# 2. Hazlo ejecutable
+chmod +x ignisky-spark.sh
+
+# 3. (Opcional) Instálalo en tu PATH
+make install
+```
+
+**Requisitos:** Bash 4+ (viene en cualquier Linux/macOS moderno).
 
 ---
 
 ## 🚀 Uso rápido
 
 ```bash
-# Modo interactivo
+# Modo interactivo (recomendado para empezar)
 ./ignisky-spark.sh
 
 # Workspace Python con Git
 ./ignisky-spark.sh --type python --name my-agent --git
 
-# Workspace TypeScript
-./ignisky-spark.sh --type ts --name mcp-server --git
+# Workspace TypeScript con instalación de dependencias
+./ignisky-spark.sh --type ts --name mcp-server --git --install
 
-# Ver tipos disponibles
-./ignisky-spark.sh --list
+# Web app completa con SDD
+./ignisky-spark.sh --type web-app --name my-app --author "Tu Nombre" --desc "App genial"
+
+# Añadir CI/CD a un proyecto existente
+./ignisky-spark.sh --ci --dir /ruta/del/proyecto
 ```
 
 ---
 
 ## 📋 Tipos de proyecto
 
-| Tipo | Lenguaje | Icono | Extensión |
-|------|----------|-------|-----------|
-| `bash` | Scripts Bash para automatización de agentes | 🐚 | `.sh` |
-| `python` | Python con pip/uv para agentes AI | 🐍 | `.py` |
-| `ts` | TypeScript/Node.js para herramientas MCP | 🟦 | `.ts` |
-| `cpp` | C++ nativo para alto rendimiento | ⚡ | `.cpp` |
-| `rust` | Rust con Cargo para agentes seguros | 🦀 | `.rs` |
-| `web` | Web estática HTML/CSS/JS | 🌐 | `.html` |
-| `web-app` | Web app completa con SDD | 📦 | `.js` |
+| Tipo | Lenguaje | Icono |
+|------|----------|-------|
+| `bash` | Scripts Bash para automatización de agentes | 🐚 |
+| `python` | Python con pip/uv para agentes AI | 🐍 |
+| `ts` | TypeScript/Node.js para herramientas MCP | 🟦 |
+| `cpp` | C++ nativo para alto rendimiento | ⚡ |
+| `rust` | Rust con Cargo para agentes seguros | 🦀 |
+| `web` | Web estática HTML/CSS/JS | 🌐 |
+| `web-app` | Web app completa con SDD | 📦 |
 
-Cada tipo crea automáticamente:
-
-- `src/` — Código fuente con archivo de entrada (`main.sh`/`main.py`/`main.ts`/`main.cpp`/`main.rs`)
-- `tests/` — Tests adaptados al lenguaje
-- `docs/` — Documentación
-- `.gitignore` optimizado para agentes AI
-- `README.md` con badges Ignición 🔥
-- **`CLAUDE.md`** — Contexto para Claude Code / Hermes Agent
-- **`AGENTS.md`** — Contexto multi-agente (Cursor, Windsurf, Copilot)
-- Ficheros específicos por tipo (`package.json`, `Cargo.toml`, `pyproject.toml`, `Makefile`, etc.)
+Cada tipo genera automáticamente `src/`, `tests/`, `docs/`, `.gitignore`, `README.md`, **`CLAUDE.md`** y **`AGENTS.md`** — contexto listo para que tu agente entienda el proyecto desde el primer `cd`.
 
 ---
 
-## ✨ Características
+## 🆓 Funciones Gratis
 
-| Característica | Descripción |
-|----------------|-------------|
-| ✅ **5 tipos de proyecto** | bash, python, ts, cpp, rust |
-| ✅ **CLAUDE.md + AGENTS.md** | Contexto AI para tu agente |
-| ✅ **--author / --desc** | Personaliza el proyecto |
-| ✅ **--git** | Git init + commit inicial |
-| ✅ **--install** | Auto-instala dependencias |
-| ✅ **--interactivo** | Menú guiado paso a paso |
-| ⛁ **--ci** | CI/CD + Docker (Premium) |
-| ⛁ **--make** | Makefile completo (Premium) |
-| ⛁ **--bootstrap** | Bootstrap de tools (Premium) |
-| ⛁ **--templates** | Editorconfig + linters (Premium) |
+| Comando | Descripción |
+|---------|-------------|
+| `--type <lenguaje>` | Elige entre 7 tipos de proyecto |
+| `--name <nombre>` | Nombre del proyecto |
+| `--author <autor>` | Personaliza el autor (default: git user.name) |
+| `--desc <desc>` | Descripción breve del proyecto |
+| `--git` | Inicializa repo Git + commit inicial |
+| `--install` | Instala dependencias (pip/npm/cargo) |
+| `--list` | Lista los tipos disponibles |
+| `--help` / `-h` | Muestra la ayuda completa |
 
 ---
 
-## 📦 Estructura generada
+## 💎 Funciones Premium
+
+| Comando | Feature | Descripción |
+|---------|---------|-------------|
+| `--ci` | **spark:blast** | CI/CD (GitHub Actions) + Dockerfile multi-stage + .dockerignore |
+| `--make` | **spark:forge** | Makefile con 10 targets (build/test/clean/lint/run/docker...) |
+| `--bootstrap` | **spark:env** | Detecta herramientas instaladas y las instala si faltan |
+| `--templates` | **spark:kit** | Editorconfig + Prettier/ESLint/ruff/clang-format/rustfmt según tipo |
+
+```bash
+# Ejemplos de uso premium:
+./ignisky-spark.sh --ci --dir ./mi-proyecto
+./ignisky-spark.sh --make --dir ./mi-proyecto
+./ignisky-spark.sh --templates --dir ./mi-proyecto
+./ignisky-spark.sh --bootstrap python
+```
+
+Las funciones premium se aplican **tanto en proyectos nuevos como existentes** — usa `--dir <ruta>` para añadirlas a cualquier proyecto.
+
+> 🏷️ **Cupón exclusivo:** `IGNICION25` — 25% OFF en el pack premium
+
+<p align="center">
+  <a href="https://ignaciodev.gumroad.com/l/ignisky-spark-premium">
+    <img src="https://img.shields.io/badge/🎯-CONSEGUIR+PREMIUM-ED2100?style=for-the-badge" alt="Premium">
+  </a>
+  <br>
+  <sub>Código <code>IGNICION25</code> → 25% OFF (11.25€)</sub>
+</p>
+
+---
+
+## 🎮 Modo Interactivo
+
+Ejecuta `./ignisky-spark.sh` sin argumentos para entrar en el menú guiado:
+
+```
+┌─ ¿Qué quieres hacer? ───────────────────────────┐
+│  1  🔥  Crear nuevo workspace                   │
+│  2  📋  Ver tipos de proyecto disponibles        │
+│  3  💎  Ver funciones premium                    │
+│  0  🚪  Salir                                   │
+└──────────────────────────────────────────────────┘
+```
+
+Dentro de "Crear nuevo workspace" se te guiará paso a paso: elegir tipo, nombre, autor, descripción y extras como Git init o instalación de dependencias.
+
+---
+
+## 📂 Estructura generada (ejemplo: TypeScript)
 
 ```
 mi-proyecto/
@@ -82,80 +138,50 @@ mi-proyecto/
 ├── tests/         # Tests
 ├── docs/          # Documentación
 ├── .gitignore     # Optimizado para agentes AI
-├── CLAUDE.md      # Contexto para agentes Claude/Hermes
-├── AGENTS.md      # Contexto multi-agente
+├── CLAUDE.md      # Contexto para Claude Code / Hermes Agent
+├── AGENTS.md      # Contexto multi-agente (Cursor, Windsurf, Copilot)
 └── README.md      # README template con badges 🔥
 ```
 
----
-
-## 🆓 vs ⛁ — Gratis vs Premium
-
-| Feature | Flag | Gratis | Premium ⛁ |
-|---------|------|:------:|:----------:|
-| Scaffold completo (`src/`, `tests/`, `docs/`) | `--type <lang>` | ✅ | — |
-| `.gitignore` optimizado para agentes AI | automático | ✅ | — |
-| `README.md` template con badges | automático | ✅ | — |
-| Archivo de entrada según tipo | automático | ✅ | — |
-| Archivo de test inicial | automático | ✅ | — |
-| Inicializar repo Git | `--git` | ✅ | — |
-| **CI/CD + Docker** (`.github/workflows/`, `Dockerfile`, `.dockerignore`) | `--ci` | — | ⛁ |
-| **Makefile inteligente** (build/test/clean/deploy/help) | `--make` | — | ⛁ |
-| **Bootstrap de herramientas** (instala dependencias automáticamente) | `--bootstrap` | — | ⛁ |
-| **Templates de editor** (`.editorconfig`, `.prettierrc`, linters) | `--templates` | — | ⛁ |
-
-> ⛁ **Premium** — Canjea tu cupón **`IGNICION25`** (25% OFF → **11.25€**) en [gumroad.com/l/...](https://gumroad.com/l/...)
+Para `web-app` se genera además `docs/sdd.md` (Software Design Document) con plantilla profesional.
 
 ---
 
-## 🔥 Premium features detalladas
+## 🤖 Prompt para Hermes Agent
 
-### spark:blast — `--ci`
-Añade a tu proyecto:
-- `.github/workflows/ci.yml` — Pipeline de CI con lint + test + build
-- `.github/workflows/deploy.yml` — Pipeline de deploy
-- `Dockerfile` — Multi-stage optimizado para el tipo de proyecto
-- `.dockerignore` — Excluye lo innecesario del contexto Docker
+```bash
+# Copia y pega esto en tu chat de Hermes Desktop:
+Usa ignisky-spark para crear workspace --type python --name mi-proyecto --git
+```
 
-### spark:forge — `--make`
-Genera un Makefile con todos los targets que necesitas:
-`build`, `test`, `clean`, `deploy`, `lint`, `docs`, `install`, `run`, `docker-build`, `docker-run`, `help`
-
-Se adapta automáticamente al tipo de proyecto.
-
-### spark:env — `--bootstrap`
-Detecta e instala las herramientas necesarias para tu proyecto:
-- **bash**: shellcheck, bash-completion
-- **python**: python3, pip, uv, pytest, ruff
-- **ts**: node, bun, typescript, tsx
-- **cpp**: g++, cmake, make, clang-format
-- **rust**: rustup, cargo, clippy, rustfmt
-
-### spark:kit — `--templates`
-Añade configuraciones de editor profesionales adaptadas al tipo de proyecto:
-- `.editorconfig` — Estilo consistente en cualquier editor
-- `.prettierrc` — Formateo automático (TS/JS/Python)
-- Configuración específica de linter según tipo
+Si tienes spark en el PATH, Hermes puede invocarlo directamente para scaffolding rápido.
 
 ---
 
-## 🔗 Enlaces del ecosistema
+## 🔗 Ecosistema ignisky-*
 
-| Herramienta | Descripción |
-|-------------|-------------|
-| [ignisky-spark](https://github.com/yosoyignicion/ignisky-spark) | 🏠 **Este script** — Scaffolding de workspaces AI |
-| [ignisky-kindler](https://github.com/yosoyignicion/ignisky-kindler) | 🔥 Gestor de servidores MCP para Hermes Agent |
-| [Ignición 🔥](https://github.com/yosoyignicion) | 🧠 Ecosistema de herramientas AI para creadores |
+Este script forma parte de una suite de herramientas para agentes AI:
+
+| Herramienta | Función | Estado |
+|-------------|---------|--------|
+| [**ignisky-kindler**](https://github.com/yosoyignicion/ignisky-kindler) | Configuración y monitorización de MCPs | ✅ Disponible |
+| [**ignisky-spark**](https://github.com/yosoyignicion/ignisky-spark) | **🏠 Este script** — Scaffolding de workspaces AI | ✅ v1.0.1 |
+| [**ignisky-forge**](https://github.com/yosoyignicion/ignisky-forge) | Gestión de perfiles Hermes Agent | ✅ Disponible |
+| [**ignisky-embers**](https://github.com/yosoyignicion/ignisky-embers) | Auditoría de seguridad del filesystem expuesto al agente | 🔄 En desarrollo |
 
 ---
 
-## 📖 Licencia
+## 📬 Feedback
 
-MIT — Hecho con ❤️ por **IgnicionDev (yosoyignicion)**
+¿Bugs, sugerencias o quieres proponer un tipo de proyecto nuevo?
+
+- **Issues:** [github.com/yosoyignicion/ignisky-spark/issues](https://github.com/yosoyignicion/ignisky-spark/issues)
 
 ---
 
 <p align="center">
-  <b>Ignición 🔥</b> — Herramientas AI para creadores de agentes<br>
-  <sub>Discord: <a href="https://discord.gg/">ignicion-community</a> · Web: próximamente</sub>
+  <sub>Hecho con 🔥 por <a href="https://github.com/yosoyignicion">IgnicionDev</a>
+  · <a href="https://yosoyignicion.github.io/portafolio">Portafolio</a></sub>
+  <br>
+  <sub>Parte del ecosistema <b>ignisky-*</b> · Paleta Ignición #ED2100 · #050505</sub>
 </p>
