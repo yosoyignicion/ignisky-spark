@@ -89,7 +89,7 @@ premium_footer() {
     echo ""
     separator
     echo -e "  ${BOLD}💎 Disponible en el pack premium${NC}"
-    echo -e "  ${BOLD}👉 https://ignaciodev.gumroad.com/l/ignisky-spark-premium  ·  Cupón: ${RED}IGNICION25${NC}"
+    echo -e "  ${BOLD}👉 https://ignaciodev.gumroad.com/l/ykcwl  ·  Cupón: ${RED}IGNICION25${NC}"
     separator
 }
 
@@ -371,7 +371,7 @@ Este workspace está optimizado para ser usado por agentes AI (Hermes Agent, Cla
 | ⛁ Bootstrap de herramientas | Premium |
 | ⛁ Editorconfig + Prettier + TSConfig | Premium |
 
-> ⛁ Premium — Disponible con cupón **IGNICION25** en https://ignaciodev.gumroad.com/l/ignisky-spark-premium
+> ⛁ Premium — Disponible con cupón **IGNICION25** en https://ignaciodev.gumroad.com/l/ykcwl
 
 ## 📦 Requisitos
 
@@ -1066,10 +1066,23 @@ detect_project_type() {
 }
 
 # ═══════════════════════════════════════════════════════════════
+#  PREMIUM STUB — Muestra mensaje de cupón cuando no está desbloqueado
+# ═══════════════════════════════════════════════════════════════
+
+premium_stub() {
+    local name="${1:-feature}"
+    header "🔥 ignisky-spark:${name}"
+    echo -e "  ${YELLOW}⛁${NC} ${BOLD}Premium feature${NC}"
+    dim "  Disponible en el pack premium con cupón ${RED}IGNICION25${NC}"
+    premium_footer
+}
+
+# ═══════════════════════════════════════════════════════════════
 #  spark:blast → --ci: CI/CD (.github/workflows) + Dockerfile
 # ═══════════════════════════════════════════════════════════════
 
 premium_ci() {
+    [[ "${SPARK_PREMIUM:-}" != "true" ]] && { premium_stub "blast"; return; }
     local target_dir="$1"
     local project_type="$2"
 
@@ -1320,6 +1333,7 @@ DIEOF
 # ═══════════════════════════════════════════════════════════════
 
 premium_make() {
+    [[ "${SPARK_PREMIUM:-}" != "true" ]] && { premium_stub "forge"; return; }
     local target_dir="$1"
     local project_type="$2"
 
@@ -1549,6 +1563,7 @@ MKEOF
 # ═══════════════════════════════════════════════════════════════
 
 premium_bootstrap() {
+    [[ "${SPARK_PREMIUM:-}" != "true" ]] && { premium_stub "env"; return; }
     local project_type="$1"
 
     header "🔥 ignisky-spark:env — Bootstrap de Herramientas"
@@ -1624,6 +1639,7 @@ premium_bootstrap() {
 # ═══════════════════════════════════════════════════════════════
 
 premium_templates() {
+    [[ "${SPARK_PREMIUM:-}" != "true" ]] && { premium_stub "kit"; return; }
     local target_dir="$1"
     local project_type="$2"
 
@@ -1741,7 +1757,7 @@ premium_all() {
     echo -e "  ${GRAY}│${NC}  🧰  ${BOLD}spark:kit${NC}      ${GRAY}· Editorconfig + Prettier + Linters por tipo${NC}"
     echo ""
     separator
-    echo -e "  ${BOLD}👉 https://ignaciodev.gumroad.com/l/ignisky-spark-premium${NC}"
+    echo -e "  ${BOLD}👉 https://ignaciodev.gumroad.com/l/ykcwl${NC}"
     echo -e "  ${BOLD}🏷️  Cupón: ${RED}IGNICION25${NC} ${GRAY}(25% OFF → 11.25€)${NC}"
     separator
 }
@@ -1935,7 +1951,7 @@ usage() {
     echo -e "  ${SCRIPT_NAME} --premium"
     echo ""
     separator
-    echo -e "${BOLD}💎 https://ignaciodev.gumroad.com/l/ignisky-spark-premium  ·  Cupón: ${RED}IGNICION25${NC}"
+    echo -e "${BOLD}💎 https://ignaciodev.gumroad.com/l/ykcwl  ·  Cupón: ${RED}IGNICION25${NC}"
     separator
     exit 0
 }
