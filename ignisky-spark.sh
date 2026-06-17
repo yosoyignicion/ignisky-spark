@@ -1023,6 +1023,109 @@ install_deps() {
 }
 
 # ═══════════════════════════════════════════════════════════════
+#  TREE — Muestra árbol del proyecto generado
+# ═══════════════════════════════════════════════════════════════
+
+cmd_tree() {
+    local dir="${1:-$PWD}"
+    if [[ ! -d "$dir" ]]; then
+        warn "Directorio no existe: $dir"
+        return
+    fi
+    header "🌳 Árbol del proyecto — $(basename "$dir")"
+    echo ""
+    if command -v tree &>/dev/null; then
+        tree "$dir" -I '.git|__pycache__|node_modules|target|build' --charset utf-8 2>/dev/null
+    else
+        find "$dir" -not -path '*/\.git/*' -not -name '.git' -not -path '*/node_modules/*' -not -path '*/target/*' -not -path '*/build/*' -type f | sort | sed "s|$dir/||" | while IFS= read -r f; do
+            local depth; depth=$(echo "$f" | tr -cd '/' | wc -c)
+            local indent=""
+            for ((i=0; i<depth; i++)); do indent+="  "; done
+            echo -e "${GRAY}${indent}├──${NC} $(basename "$f")"
+        done
+    fi
+    echo ""
+    local count; count=$(find "$dir" -not -path '*/\.git/*' -not -name '.git' -type f 2>/dev/null | wc -l)
+    local size; size=$(du -sh "$dir" 2>/dev/null | cut -f1)
+    echo -e "  ${GRAY}📄 $count archivos · ${size}${NC}"
+}
+
+# ═══════════════════════════════════════════════════════════════
+#  DOCTOR — Valida estructura del proyecto
+# ═══════════════════════════════════════════════════════════════
+
+cmd_doctor() {
+    local dir="${1:-$PWD}"
+    header "🩺 ignisky-spark:doctor — Diagnosticando $(basename "$dir")"
+    echo ""
+    local issues=0
+    draw_box "🔍 Validación de estructura"
+    
+    for f in README.md .gitignore; do
+        if [[ -f "$dir/$f" ]]; then
+            echo -e "  ${SAFE} ${BOLD}$f${NC} presente"
+        else
+            echo -e "  ${VULN} ${BOLD}$f${NC} ${CROSS} ausente"
+            issues=$((issues+1))
+        fi
+    done
+    
+    for d in src tests docs; do
+        if [[ -d "$dir/$d" ]]; then
+            echo -e "  ${SAFE} ${BOLD}$d/${NC} presente"
+        else
+            echo -e "  ${YELLOW}⚠${NC} ${BOLD}$d/${NC} ausente (opcional)"
+        fi
+    done
+    
+    for f in CLAUDE.md AGENTS.md; do
+        if [[ -f "$dir/$f" ]]; then
+            echo -e "  ${SAFE} ${BOLD}$f${NC} presente — contexto AI listo"
+        else
+            echo -e "  ${YELLOW}⚠${NC} ${BOLD}$f${NC} ausente — ejecuta ${BOLD}spark --upgrade${NC}"
+        fi
+    done
+    
+    box_end
+    
+    if [[ $issues -eq 0 ]]; then
+        log "Proyecto saludable 🟢"
+    else
+        warn "$issues issue(s) encontrados"
+    fi
+}
+
+# ═══════════════════════════════════════════════════════════════
+#  UPGRADE — Añade CLAUDE.md + AGENTS.md a proyecto existente
+# ═══════════════════════════════════════════════════════════════
+
+cmd_upgrade() {
+    local dir="${1:-$PWD}"
+    header "🔥 ignisky-spark:upgrade — Mejorando $(basename "$dir")"
+    echo ""
+    local ptype; ptype=$(detect_project_type "$dir")
+    local author; author=$(git config user.name 2>/dev/null || echo "IgnicionDev")
+    local name; name=$(basename "$dir")
+    
+    if [[ ! -f "$dir/CLAUDE.md" ]]; then
+        generate_claude_md "$name" "$ptype" "$author" "" > "$dir/CLAUDE.md"
+        success "CLAUDE.md generado"
+    else
+        dim "  CLAUDE.md ya existe — saltando"
+    fi
+    
+    if [[ ! -f "$dir/AGENTS.md" ]]; then
+        generate_agents_md "$name" "$ptype" "$author" > "$dir/AGENTS.md"
+        success "AGENTS.md generado"
+    else
+        dim "  AGENTS.md ya existe — saltando"
+    fi
+    
+    echo ""
+    log "Proyecto actualizado con contexto AI 🤖"
+}
+
+# ═══════════════════════════════════════════════════════════════
 #  LIST — Tipos disponibles
 # ═══════════════════════════════════════════════════════════════
 
@@ -1923,6 +2026,9 @@ usage() {
     echo -e "  ${GREEN}--list${NC}"
     echo -e "  ${GREEN}--git${NC}                     Inicializa repo Git automáticamente"
     echo -e "  ${GREEN}--install${NC}                 Instala dependencias (pip/npm/cargo)"
+    echo -e "  ${GREEN}--tree${NC} [dir]              Muestra árbol del proyecto"
+    echo -e "  ${GREEN}--doctor${NC} [dir]            Valida estructura del proyecto"
+    echo -e "  ${GREEN}--upgrade${NC} [dir]           Añade CLAUDE.md + AGENTS.md a proyecto existente"
     echo ""
     echo -e "${BOLD}Premium (⛁  requiere pack con cupón ${RED}IGNICION25${NC}${BOLD}):${NC}"
     echo -e "  ${YELLOW}⛁${NC} ${GREEN}--ci${NC}           CI/CD (.github/workflows) + Dockerfile + .dockerignore"
@@ -1977,6 +2083,9 @@ parse_args() {
             --list)          list_types; exit 0 ;;
             --git)           DO_GIT=true ;;
             --install)       DO_INSTALL=true ;;
+            --tree)          MODE="tree" ;;
+            --doctor)        MODE="doctor" ;;
+            --upgrade)       MODE="upgrade" ;;
             --ci)            MODE="premium-ci" ;;
             --make)          MODE="premium-make" ;;
             --bootstrap)     MODE="premium-bootstrap" ;;
@@ -2007,6 +2116,16 @@ parse_args() {
             premium-all)
                 premium_all
                 ;;
+        esac
+        exit 0
+    fi
+
+    # Si hay modo tree/doctor/upgrade (no requieren scaffold)
+    if [[ -n "${MODE:-}" ]]; then
+        case "$MODE" in
+            tree)    cmd_tree "${PREMIUM_DIR:-$PWD}" ;;
+            doctor)  cmd_doctor "${PREMIUM_DIR:-$PWD}" ;;
+            upgrade) cmd_upgrade "${PREMIUM_DIR:-$PWD}" ;;
         esac
         exit 0
     fi
