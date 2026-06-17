@@ -1,0 +1,22 @@
+name: Lint & Test
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: ShellCheck
+        run: |
+          sudo apt-get update && sudo apt-get install -y shellcheck
+          shellcheck --severity=style ignisky-spark.sh || true
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Smoke test
+        run: |
+          bash -n ignisky-spark.sh
+          SPARK_WORKDIR=/tmp bash ignisky-spark.sh --type python --name ci-test --author CI --desc 'GH Actions' >/dev/null 2>&1
+          rm -rf /tmp/ci-test

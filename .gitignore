@@ -1,0 +1,15 @@
+# ignisky-spark — project gitignore
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.bak
+*.orig
+__pycache__/
+*.pyc
+dist/
+build/
+*.log
+tmp/
+.history/
