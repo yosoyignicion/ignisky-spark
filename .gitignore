@@ -13,5 +13,3 @@ build/
 *.log
 tmp/
 .history/
-premium/dist/
-premium/*.zip
