@@ -12,6 +12,16 @@
 
 ---
 
+## 📸 Capturas
+
+<p align="center">
+  <img src="ignispark-picture-list.png" alt="ignisky-spark --list" width="720px">
+  <br>
+  <sub>7 tipos de proyecto disponibles 🔥</sub>
+</p>
+
+---
+
 ## 📦 Instalación
 
 ```bash
